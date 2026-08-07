@@ -1,0 +1,6 @@
+{
+  "name": "Hero Homes",
+  "description": "AI-Powered Home Services Booking Platform with Customer Mobile App, Service Hero App, AI Diagnostics & Admin Dashboard",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
