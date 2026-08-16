@@ -198,6 +198,7 @@ export default function App() {
       <DeviceFrame
         role={role}
         setRole={setRole}
+        currentUser={currentUser}
         currentScreenLabel={getCurrentScreenLabel()}
         onScreenSelect={handleScreenSelect}
         onLogout={handleLogout}

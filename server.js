@@ -114,6 +114,11 @@ app.put('/api/technicians/status', (req, res) => {
   }
 });
 
+// 5. Full Database Tables API (For Admin / Developer Inspection)
+app.get('/api/db', (req, res) => {
+  res.json(db.read());
+});
+
 // Fallback to React App
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
