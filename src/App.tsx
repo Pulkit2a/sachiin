@@ -12,8 +12,10 @@ import { CustomerProfile } from './components/customer/CustomerProfile';
 import { HeroApp } from './components/hero/HeroApp';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { UserFlowDiagram } from './components/UserFlowDiagram';
+import { CustomerLoginModal } from './components/auth/CustomerLoginModal';
+import { PartnerLoginModal } from './components/auth/PartnerLoginModal';
 import { sampleBookings } from './data/mockData';
-import { AppRole, DevicePlatform, CustomerTab, HeroTab, Booking } from './types';
+import { AppRole, DevicePlatform, CustomerTab, HeroTab, Booking, CustomerAuthState, PartnerAuthState } from './types';
 
 export default function App() {
   const [role, setRole] = useState<AppRole>('customer');
@@ -25,10 +27,36 @@ export default function App() {
     'main' | 'live_map' | 'service_flow' | 'ai_identifier' | 'ai_diagnostics' | 'ai_chat' | 'ai_matching'
   >('main');
 
+  // Synchronized Active Booking State
   const [selectedBookingForMap, setSelectedBookingForMap] = useState<Booking>(sampleBookings[0]);
 
-  // Hero Navigation State
+  // Hero / Partner Navigation State
   const [heroTab, setHeroTab] = useState<HeroTab>('jobs');
+
+  // Authentication States
+  const [customerAuth, setCustomerAuth] = useState<CustomerAuthState>({
+    isLoggedIn: true,
+    phone: '+91 99887 76655',
+    name: 'Sacchin Chawla',
+    selectedCity: 'Bengaluru',
+    defaultAddress: 'Indiranagar, Bengaluru',
+  });
+
+  const [partnerAuth, setPartnerAuth] = useState<PartnerAuthState>({
+    isLoggedIn: true,
+    partnerId: 'UC-PARTNER-789',
+    name: 'Ramesh Kumar',
+    phone: '+91 98765 43210',
+    category: 'AC & Appliance Repair',
+    rating: 4.94,
+    isOnline: true,
+    kycStatus: 'verified',
+    completedJobsCount: 1480,
+  });
+
+  // Login Modal Modals
+  const [isCustomerLoginOpen, setIsCustomerLoginOpen] = useState(false);
+  const [isPartnerLoginOpen, setIsPartnerLoginOpen] = useState(false);
 
   // Screen Jumper Handler
   const handleScreenSelect = (screenKey: string) => {
@@ -48,11 +76,6 @@ export default function App() {
         setCustomerTab('bookings');
         setActiveSubView('live_map');
         break;
-      case 'cust_booking_confirm':
-        setRole('customer');
-        setCustomerTab('bookings');
-        setActiveSubView('main');
-        break;
       case 'cust_service_flow':
         setRole('customer');
         setActiveSubView('service_flow');
@@ -68,15 +91,6 @@ export default function App() {
       case 'cust_ai_chat':
         setRole('customer');
         setActiveSubView('ai_chat');
-        break;
-      case 'cust_ai_matching':
-        setRole('customer');
-        setActiveSubView('ai_matching');
-        break;
-      case 'cust_community':
-        setRole('customer');
-        setCustomerTab('community');
-        setActiveSubView('main');
         break;
       case 'cust_rewards':
         setRole('customer');
@@ -104,10 +118,6 @@ export default function App() {
         setRole('hero');
         setHeroTab('schedule');
         break;
-      case 'hero_nav':
-        setRole('hero');
-        setHeroTab('jobs');
-        break;
       case 'hero_earnings':
         setRole('hero');
         setHeroTab('earnings');
@@ -129,108 +139,138 @@ export default function App() {
     }
   };
 
-  // Label calculation for header
   const getCurrentScreenLabel = () => {
-    if (role === 'admin') return '🛡️ Admin Web Dashboard';
-    if (role === 'flow') return '🔄 User Flow Diagram';
-    if (role === 'hero') return `⚡ Hero Pro (${heroTab.toUpperCase()})`;
+    if (role === 'admin') return '🛡️ UC Admin Control Room';
+    if (role === 'flow') return '🔄 User Flow Architecture';
+    if (role === 'hero') return `⚡ UC Partner App (${heroTab.toUpperCase()})`;
 
-    if (activeSubView === 'live_map') return '📍 Live Hero Tracking Map';
-    if (activeSubView === 'service_flow') return '⚡ Booking & Payment Flow';
-    if (activeSubView === 'ai_identifier') return '🤖 AI Issue & Cost Identifier';
-    if (activeSubView === 'ai_diagnostics') return '📊 AI Home Diagnostics';
-    if (activeSubView === 'ai_chat') return '💬 Hero AI Chatbot';
-    if (activeSubView === 'ai_matching') return '🎯 Smart AI Hero Matching';
+    if (activeSubView === 'live_map') return '📍 Live Partner Tracking & Start Job OTP';
+    if (activeSubView === 'service_flow') return '⚡ Urban Company Service Checkout';
+    if (activeSubView === 'ai_identifier') return '🤖 AI Issue Scanner';
+    if (activeSubView === 'ai_diagnostics') return '📊 AI Home Wellness Diagnostics';
+    if (activeSubView === 'ai_chat') return '💬 UC AI Assistant';
 
-    return `🏠 Customer ${customerTab.charAt(0).toUpperCase() + customerTab.slice(1)}`;
+    return `🏠 Urban Company Customer (${customerTab.charAt(0).toUpperCase() + customerTab.slice(1)})`;
   };
 
   return (
-    <DeviceFrame
-      role={role}
-      setRole={setRole}
-      platform={platform}
-      setPlatform={setPlatform}
-      currentScreenLabel={getCurrentScreenLabel()}
-      onScreenSelect={handleScreenSelect}
-    >
-      {/* CUSTOMER ROLE CANVAS */}
-      {role === 'customer' && (
-        <div className="flex-1 flex flex-col h-full bg-[#F6F7F9]">
-          {/* Sub Views Overrides */}
-          {activeSubView === 'live_map' ? (
-            <LiveTrackingMap
-              booking={selectedBookingForMap}
-              onClose={() => setActiveSubView('main')}
-              onOpenChat={() => setActiveSubView('ai_chat')}
-            />
-          ) : activeSubView === 'service_flow' ? (
-            <ServiceBookingFlow
-              onBookingComplete={(newBooking) => {
-                setSelectedBookingForMap(newBooking);
-                setCustomerTab('bookings');
-                setActiveSubView('live_map');
-              }}
-              onCancel={() => setActiveSubView('main')}
-            />
-          ) : activeSubView.startsWith('ai_') ? (
-            <AIFeatures
-              initialScreen={activeSubView.replace('ai_', '') as any}
-              onBookService={() => setActiveSubView('service_flow')}
-              onBack={() => setActiveSubView('main')}
-            />
-          ) : (
-            /* Main 5 Tabs Views */
-            <div className="flex-1 flex flex-col overflow-y-auto">
-              {customerTab === 'home' && (
-                <CustomerHome
-                  onSelectCategory={() => setActiveSubView('service_flow')}
-                  onNavigateToAI={(screen) => setActiveSubView(`ai_${screen}` as any)}
-                  onNavigateToBookings={() => setCustomerTab('bookings')}
-                  onNavigateToRewards={() => setCustomerTab('rewards')}
-                />
-              )}
+    <>
+      <DeviceFrame
+        role={role}
+        setRole={setRole}
+        platform={platform}
+        setPlatform={setPlatform}
+        currentScreenLabel={getCurrentScreenLabel()}
+        onScreenSelect={handleScreenSelect}
+        onOpenCustomerLogin={() => setIsCustomerLoginOpen(true)}
+        onOpenPartnerLogin={() => setIsPartnerLoginOpen(true)}
+        customerAuth={customerAuth}
+        partnerAuth={partnerAuth}
+      >
+        {/* URBAN COMPANY CUSTOMER APP */}
+        {role === 'customer' && (
+          <div className="flex-1 flex flex-col h-full bg-[#F8FAFC]">
+            {/* Sub Views Overrides */}
+            {activeSubView === 'live_map' ? (
+              <LiveTrackingMap
+                booking={selectedBookingForMap}
+                onClose={() => setActiveSubView('main')}
+                onOpenChat={() => setActiveSubView('ai_chat')}
+              />
+            ) : activeSubView === 'service_flow' ? (
+              <ServiceBookingFlow
+                onBookingComplete={(newBooking) => {
+                  setSelectedBookingForMap(newBooking);
+                  setCustomerTab('bookings');
+                  setActiveSubView('live_map');
+                }}
+                onCancel={() => setActiveSubView('main')}
+              />
+            ) : activeSubView.startsWith('ai_') ? (
+              <AIFeatures
+                initialScreen={activeSubView.replace('ai_', '') as any}
+                onBookService={() => setActiveSubView('service_flow')}
+                onBack={() => setActiveSubView('main')}
+              />
+            ) : (
+              /* Main Customer Views */
+              <div className="flex-1 flex flex-col overflow-y-auto">
+                {customerTab === 'home' && (
+                  <CustomerHome
+                    onSelectCategory={() => setActiveSubView('service_flow')}
+                    onNavigateToAI={(screen) => setActiveSubView(`ai_${screen}` as any)}
+                    onNavigateToBookings={() => setCustomerTab('bookings')}
+                    onNavigateToRewards={() => setCustomerTab('rewards')}
+                    onOpenLoginModal={() => setIsCustomerLoginOpen(true)}
+                    authState={customerAuth}
+                  />
+                )}
 
-              {customerTab === 'bookings' && (
-                <CustomerBookings
-                  onTrackHero={(booking) => {
-                    setSelectedBookingForMap(booking);
-                    setActiveSubView('live_map');
-                  }}
-                  onOpenChat={() => setActiveSubView('ai_chat')}
-                  onNewBooking={() => setActiveSubView('service_flow')}
-                />
-              )}
+                {customerTab === 'bookings' && (
+                  <CustomerBookings
+                    onTrackHero={(booking) => {
+                      setSelectedBookingForMap(booking);
+                      setActiveSubView('live_map');
+                    }}
+                    onOpenChat={() => setActiveSubView('ai_chat')}
+                    onNewBooking={() => setActiveSubView('service_flow')}
+                  />
+                )}
 
-              {customerTab === 'community' && <CustomerCommunity />}
+                {customerTab === 'community' && <CustomerCommunity />}
 
-              {customerTab === 'rewards' && <CustomerRewards />}
+                {customerTab === 'rewards' && <CustomerRewards />}
 
-              {customerTab === 'profile' && <CustomerProfile />}
-            </div>
-          )}
+                {customerTab === 'profile' && <CustomerProfile />}
+              </div>
+            )}
 
-          {/* Persistent Bottom Nav (When in main tab view) */}
-          {activeSubView === 'main' && (
-            <CustomerBottomNav
-              activeTab={customerTab}
-              setActiveTab={(tab) => {
-                setCustomerTab(tab);
-                setActiveSubView('main');
-              }}
-            />
-          )}
-        </div>
-      )}
+            {/* Persistent Bottom Nav (When in main tab view) */}
+            {activeSubView === 'main' && (
+              <CustomerBottomNav
+                activeTab={customerTab}
+                setActiveTab={(tab) => {
+                  setCustomerTab(tab);
+                  setActiveSubView('main');
+                }}
+              />
+            )}
+          </div>
+        )}
 
-      {/* HERO PROVIDER ROLE CANVAS */}
-      {role === 'hero' && <HeroApp initialTab={heroTab} />}
+        {/* UC PARTNER / TECHNICIAN APP */}
+        {role === 'hero' && (
+          <HeroApp
+            initialTab={heroTab}
+            partnerAuth={partnerAuth}
+            setPartnerAuth={setPartnerAuth}
+            onOpenPartnerLoginModal={() => setIsPartnerLoginOpen(true)}
+            activeBooking={selectedBookingForMap}
+            setActiveBooking={setSelectedBookingForMap}
+          />
+        )}
 
-      {/* ADMIN ROLE CANVAS */}
-      {role === 'admin' && <AdminDashboard />}
+        {/* ADMIN CONTROL ROOM */}
+        {role === 'admin' && <AdminDashboard />}
 
-      {/* USER FLOW DIAGRAM CANVAS */}
-      {role === 'flow' && <UserFlowDiagram onNavigateToStep={handleScreenSelect} />}
-    </DeviceFrame>
+        {/* USER FLOW DIAGRAM */}
+        {role === 'flow' && <UserFlowDiagram onNavigateToStep={handleScreenSelect} />}
+      </DeviceFrame>
+
+      {/* Auth Modals */}
+      <CustomerLoginModal
+        isOpen={isCustomerLoginOpen}
+        onClose={() => setIsCustomerLoginOpen(false)}
+        authState={customerAuth}
+        setAuthState={setCustomerAuth}
+      />
+
+      <PartnerLoginModal
+        isOpen={isPartnerLoginOpen}
+        onClose={() => setIsPartnerLoginOpen(false)}
+        partnerAuth={partnerAuth}
+        setPartnerAuth={setPartnerAuth}
+      />
+    </>
   );
 }

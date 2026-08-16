@@ -185,9 +185,9 @@ export const AdminDashboard: React.FC = () => {
                   {adminDashboardData.recentBookings.map((row) => (
                     <tr key={row.id} className="hover:bg-slate-800/40 transition-colors">
                       <td className="p-2.5 font-mono font-bold text-[#F5C542]">{row.id}</td>
-                      <td className="p-2.5 font-medium text-white">{row.customer}</td>
-                      <td className="p-2.5">{row.hero}</td>
-                      <td className="p-2.5">{row.service}</td>
+                      <td className="p-2.5 font-medium text-white">{row.customerName}</td>
+                      <td className="p-2.5">{row.hero.name}</td>
+                      <td className="p-2.5">{row.serviceName}</td>
                       <td className="p-2.5 font-bold text-white">₹{row.amount}</td>
                       <td className="p-2.5">
                         <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">

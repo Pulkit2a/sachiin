@@ -13,8 +13,9 @@ import {
   Battery,
   Maximize2,
   Minimize2,
+  Lock,
 } from 'lucide-react';
-import { AppRole, DevicePlatform } from '../types';
+import { AppRole, DevicePlatform, CustomerAuthState, PartnerAuthState } from '../types';
 
 interface DeviceFrameProps {
   role: AppRole;
@@ -23,6 +24,10 @@ interface DeviceFrameProps {
   setPlatform: (p: DevicePlatform) => void;
   currentScreenLabel: string;
   onScreenSelect: (screenKey: string) => void;
+  onOpenCustomerLogin: () => void;
+  onOpenPartnerLogin: () => void;
+  customerAuth: CustomerAuthState;
+  partnerAuth: PartnerAuthState;
   children: React.ReactNode;
 }
 
@@ -33,66 +38,65 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
   setPlatform,
   currentScreenLabel,
   onScreenSelect,
+  onOpenCustomerLogin,
+  onOpenPartnerLogin,
+  customerAuth,
+  partnerAuth,
   children,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const screenOptions = [
-    { section: 'Customer Mobile App', items: [
-      { key: 'cust_home', label: '🏠 Home Dashboard' },
-      { key: 'cust_bookings', label: '📅 Bookings (Tabs & Cards)' },
-      { key: 'cust_live_map', label: '📍 Live Hero Tracking Map' },
-      { key: 'cust_booking_confirm', label: '✅ Booking Confirmation Card' },
-      { key: 'cust_service_flow', label: '⚡ Service Booking & Payment Flow' },
-      { key: 'cust_ai_identifier', label: '🤖 AI Service & Cost Identifier' },
-      { key: 'cust_ai_diagnostics', label: '📊 AI Home Diagnostics (94% Wellness)' },
-      { key: 'cust_ai_chat', label: '💬 Hero AI Chatbot Assistant' },
-      { key: 'cust_ai_matching', label: '🎯 Smart AI Professional Matching' },
-      { key: 'cust_community', label: '👥 Community Hub & Articles' },
-      { key: 'cust_rewards', label: '🏆 Hero Rewards & Gold Membership' },
-      { key: 'cust_profile', label: '👤 Profile & Saved Addresses' },
+    { section: 'Urban Company Customer App', items: [
+      { key: 'cust_home', label: '🏠 Home Dashboard & City Selector' },
+      { key: 'cust_bookings', label: '📅 Active Bookings & Live Map' },
+      { key: 'cust_live_map', label: '📍 Live Partner Tracking & Start Job OTP' },
+      { key: 'cust_service_flow', label: '⚡ Checkout & Time Slot Picker' },
+      { key: 'cust_ai_identifier', label: '🤖 AI Issue & Cost Identifier' },
+      { key: 'cust_ai_diagnostics', label: '📊 AI Home Diagnostics' },
+      { key: 'cust_ai_chat', label: '💬 UC AI Chatbot Assistant' },
+      { key: 'cust_rewards', label: '🏆 UC Plus Rewards & Cash' },
+      { key: 'cust_profile', label: '👤 Customer Profile & Addresses' },
     ]},
-    { section: 'Service Provider ("Hero") App', items: [
-      { key: 'hero_dashboard', label: '⚡ Hero Provider Home & Online Switch' },
-      { key: 'hero_kyc', label: '📄 Registration & KYC Verification' },
-      { key: 'hero_job_request', label: '🚨 Incoming Job Alert (Accept/Reject)' },
-      { key: 'hero_schedule', label: '📆 Schedule & Availability Manager' },
-      { key: 'hero_nav', label: '🗺️ Customer Turn-by-Turn Navigation' },
-      { key: 'hero_earnings', label: '💰 Earnings & Payout Analytics' },
-      { key: 'hero_ratings', label: '⭐ Ratings, Reviews & Badges' },
+    { section: 'UC Partner / Technician App', items: [
+      { key: 'hero_dashboard', label: '⚡ Active Jobs & Duty Switch' },
+      { key: 'hero_job_request', label: '🚨 Real-time Incoming Job Alert' },
+      { key: 'hero_schedule', label: '📆 Duty Schedule' },
+      { key: 'hero_earnings', label: '💰 Earnings & 85/15 Payout' },
+      { key: 'hero_kyc', label: '📄 Trade Certification & KYC ID' },
+      { key: 'hero_ratings', label: '⭐ Customer Reviews & Badges' },
     ]},
-    { section: 'Admin Web Dashboard', items: [
-      { key: 'admin_dashboard', label: '📈 Platform Overview & Revenue Charts' },
-      { key: 'admin_kyc', label: '🛡️ KYC Provider Verification Queue' },
-      { key: 'admin_users', label: '👥 Customer & Hero Directory' },
-      { key: 'admin_bookings', label: '📋 Live Booking Control Room' },
+    { section: 'Admin Control Room', items: [
+      { key: 'admin_dashboard', label: '📈 Platform Overview & Control' },
+      { key: 'admin_kyc', label: '🛡️ Partner Verification Queue' },
+      { key: 'admin_users', label: '👥 User Directory' },
     ]},
-    { section: 'Architecture & Journey', items: [
+    { section: 'Architecture', items: [
       { key: 'flow_diagram', label: '🔄 Interactive User Flow Diagram' },
     ]}
   ];
 
   return (
-    <div className="min-h-screen bg-[#080E18] text-white flex flex-col font-sans selection:bg-[#F5C542] selection:text-[#0D182A]">
+    <div className="min-h-screen bg-[#090D16] text-white flex flex-col font-sans selection:bg-[#F4C430] selection:text-[#3B1C71]">
       {/* Top Universal Control Header */}
-      <header className="bg-[#0D182A] border-b border-slate-800 px-4 py-3 sticky top-0 z-50 shadow-xl">
+      <header className="bg-[#0F172A] border-b border-slate-800 px-4 py-2.5 sticky top-0 z-50 shadow-xl">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
           
-          {/* Brand & Role Switcher */}
+          {/* Brand & Role Selector */}
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#F5C542] to-amber-300 flex items-center justify-center text-[#0D182A] font-extrabold text-xl shadow-lg shadow-amber-500/20">
-                H
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B1C71] to-[#6E3CBC] border border-purple-400 flex items-center justify-center text-[#F4C430] font-black text-lg shadow-lg">
+                UC
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-heading font-bold text-lg text-white tracking-tight">Hero Homes</span>
-                  <span className="text-[10px] bg-[#F5C542]/20 text-[#F5C542] border border-[#F5C542]/30 px-2 py-0.5 rounded-full font-semibold">
-                    PRO UI v2.5
+                  <span className="font-heading font-extrabold text-base text-white tracking-tight">Urban Company</span>
+                  <span className="text-[9px] bg-[#F4C430] text-[#3B1C71] font-black px-1.5 py-0.2 rounded uppercase">
+                    Dual App v3.0
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">AI-Powered Home Services Platform</p>
+                <p className="text-[10px] text-slate-400">Customer App & Technician Partner Platform</p>
               </div>
             </div>
 
@@ -100,28 +104,27 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
             <div className="relative">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-medium transition-all"
+                className="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-2 transition-colors text-purple-200"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#F5C542]" />
-                <span className="max-w-[140px] sm:max-w-[180px] truncate">{currentScreenLabel}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
+                <span className="truncate max-w-[140px] md:max-w-[200px]">{currentScreenLabel}</span>
+                <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {isMenuOpen && (
-                <div className="absolute right-0 md:left-0 top-full mt-2 w-72 sm:w-80 bg-[#0D182A] border border-slate-700 rounded-xl shadow-2xl z-50 max-h-[75vh] overflow-y-auto p-2">
-                  {screenOptions.map((group, idx) => (
-                    <div key={idx} className="mb-3 last:mb-0">
-                      <div className="text-[10px] uppercase font-bold text-[#F5C542] px-2 py-1 tracking-wider border-b border-slate-800 mb-1">
-                        {group.section}
+                <div className="absolute left-0 mt-2 w-72 bg-[#0F172A] border border-slate-800 rounded-2xl shadow-2xl z-50 py-2 text-xs max-h-96 overflow-y-auto">
+                  {screenOptions.map((opt, i) => (
+                    <div key={i} className="mb-2">
+                      <div className="px-3 py-1 text-[10px] font-extrabold text-[#F4C430] uppercase tracking-wider bg-slate-900/80">
+                        {opt.section}
                       </div>
-                      {group.items.map((item) => (
+                      {opt.items.map((item) => (
                         <button
                           key={item.key}
                           onClick={() => {
                             onScreenSelect(item.key);
                             setIsMenuOpen(false);
                           }}
-                          className="w-full text-left px-2.5 py-2 rounded-lg text-xs text-slate-200 hover:bg-slate-800 hover:text-[#F5C542] transition-colors flex items-center gap-2"
+                          className="w-full text-left px-4 py-2 text-slate-300 hover:text-white hover:bg-purple-900/30 font-semibold transition-colors flex items-center justify-between"
                         >
                           {item.label}
                         </button>
@@ -133,144 +136,84 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
             </div>
           </div>
 
-          {/* Center Mode Tabs */}
-          <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
+          {/* App Switchers & Auth Gateways */}
+          <div className="flex items-center gap-2 w-full md:w-auto justify-center">
+            {/* Customer App Switch */}
             <button
-              onClick={() => { setRole('customer'); if (platform === 'web') setPlatform('ios'); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              onClick={() => setRole('customer')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
                 role === 'customer'
-                  ? 'bg-[#F5C542] text-[#0D182A] font-semibold shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#3B1C71] text-white border border-purple-400 shadow-lg shadow-purple-900/30'
+                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
               }`}
             >
-              <User className="w-3.5 h-3.5" />
-              Customer App
+              <User className="w-3.5 h-3.5 text-[#F4C430]" /> Customer App
             </button>
 
+            {/* Technician App Switch */}
             <button
-              onClick={() => { setRole('hero'); if (platform === 'web') setPlatform('ios'); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              onClick={() => setRole('hero')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
                 role === 'hero'
-                  ? 'bg-[#F5C542] text-[#0D182A] font-semibold shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-amber-500 text-slate-950 border border-amber-300 font-extrabold shadow-lg shadow-amber-500/20'
+                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
               }`}
             >
-              <Wrench className="w-3.5 h-3.5" />
-              Hero Pro
+              <Wrench className="w-3.5 h-3.5" /> UC Partner (Technician)
             </button>
 
+            {/* Admin Switch */}
             <button
-              onClick={() => { setRole('admin'); setPlatform('web'); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              onClick={() => setRole('admin')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
                 role === 'admin'
-                  ? 'bg-[#F5C542] text-[#0D182A] font-semibold shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-emerald-600 text-white border border-emerald-400 shadow-lg'
+                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
               }`}
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Admin Web
+              <ShieldCheck className="w-3.5 h-3.5" /> Admin Room
             </button>
 
-            <button
-              onClick={() => { setRole('flow'); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
-                role === 'flow'
-                  ? 'bg-[#F5C542] text-[#0D182A] font-semibold shadow-md'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <GitMerge className="w-3.5 h-3.5" />
-              User Flow
-            </button>
+            {/* Auth Action Triggers */}
+            {role === 'customer' && (
+              <button
+                onClick={onOpenCustomerLogin}
+                className="px-2.5 py-1.5 bg-purple-950/60 border border-purple-500/30 text-purple-200 text-xs font-bold rounded-xl hover:bg-purple-900/50 transition-colors flex items-center gap-1"
+              >
+                <Lock className="w-3 h-3 text-[#F4C430]" />
+                {customerAuth.isLoggedIn ? 'Customer Auth ✓' : 'Login'}
+              </button>
+            )}
+
+            {role === 'hero' && (
+              <button
+                onClick={onOpenPartnerLogin}
+                className="px-2.5 py-1.5 bg-amber-950/60 border border-amber-500/30 text-amber-300 text-xs font-bold rounded-xl hover:bg-amber-900/50 transition-colors flex items-center gap-1"
+              >
+                <Lock className="w-3 h-3 text-amber-400" />
+                {partnerAuth.isLoggedIn ? 'Partner Auth ✓' : 'Partner Login'}
+              </button>
+            )}
           </div>
-
-          {/* Device Shell Switcher */}
-          {role !== 'admin' && role !== 'flow' && (
-            <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
-              <button
-                onClick={() => setPlatform('ios')}
-                className={`p-1.5 rounded-lg transition-all ${
-                  platform === 'ios' ? 'bg-slate-800 text-[#F5C542]' : 'text-slate-400 hover:text-white'
-                }`}
-                title="iOS Shell (iPhone 16 Pro)"
-              >
-                <Smartphone className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setPlatform('android')}
-                className={`p-1.5 rounded-lg transition-all ${
-                  platform === 'android' ? 'bg-slate-800 text-[#F5C542]' : 'text-slate-400 hover:text-white'
-                }`}
-                title="Android Shell (Pixel 9)"
-              >
-                <Tablet className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setPlatform('web')}
-                className={`p-1.5 rounded-lg transition-all ${
-                  platform === 'web' ? 'bg-slate-800 text-[#F5C542]' : 'text-slate-400 hover:text-white'
-                }`}
-                title="Full Responsive Canvas"
-              >
-                <Layout className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white transition-all ml-1"
-                title="Toggle View Mode"
-              >
-                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-              </button>
-            </div>
-          )}
         </div>
       </header>
 
-      {/* Main Canvas Area */}
-      <main className="flex-1 py-4 sm:py-8 px-2 sm:px-4 flex items-center justify-center overflow-x-hidden">
-        {role === 'admin' || role === 'flow' || platform === 'web' ? (
-          <div className="w-full max-w-7xl bg-[#0D182A] rounded-2xl border border-slate-800 shadow-2xl p-4 sm:p-6 min-h-[820px]">
+      {/* Main Canvas View Body */}
+      <main className="flex-1 flex items-center justify-center p-2 sm:p-4 bg-[#090D16] overflow-auto">
+        {role === 'flow' || role === 'admin' || platform === 'web' ? (
+          <div className="w-full max-w-6xl h-[85vh] bg-[#0F172A] rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col">
             {children}
           </div>
         ) : (
-          /* Mobile Device Frame Mockup */
-          <div className="relative group transition-all duration-300">
-            {/* Outer Glow */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#F5C542]/20 via-blue-500/10 to-amber-500/20 rounded-[48px] blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
+          /* Mobile Device Frame Simulation */
+          <div className="w-[380px] h-[780px] bg-slate-950 rounded-[44px] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col relative ring-1 ring-slate-700">
+            {/* Simulated Phone Notch */}
+            <div className="w-32 h-4 bg-slate-800 rounded-b-xl mx-auto z-40 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-slate-900 border border-slate-700" />
+            </div>
 
-            <div
-              className={`relative bg-[#0D182A] rounded-[44px] p-3 border-[6px] border-slate-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden transition-all ${
-                platform === 'ios' ? 'w-[390px] sm:w-[410px]' : 'w-[390px] sm:w-[410px]'
-              } h-[840px] flex flex-col`}
-            >
-              {/* Phone Hardware Notch / Dynamic Island */}
-              <div className="relative z-40 bg-[#0D182A] pt-1 pb-1 px-5 flex items-center justify-between text-xs text-white">
-                <span className="font-semibold text-xs tracking-tight">09:41</span>
-                
-                {platform === 'ios' ? (
-                  <div className="w-24 h-5 bg-black rounded-full flex items-center justify-end px-2 border border-slate-800 shadow-inner">
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-900/60 border border-blue-400/40 animate-pulse" />
-                  </div>
-                ) : (
-                  <div className="w-3.5 h-3.5 bg-black rounded-full border border-slate-700" />
-                )}
-
-                <div className="flex items-center gap-1.5 text-slate-300 text-[11px]">
-                  <span className="font-bold text-[9px] bg-slate-800 px-1 rounded">5G</span>
-                  <Wifi className="w-3.5 h-3.5" />
-                  <Battery className="w-4 h-4 fill-white text-white" />
-                </div>
-              </div>
-
-              {/* Screen Body */}
-              <div className="flex-1 bg-[#F6F7F9] text-[#0D182A] rounded-[32px] overflow-y-auto overflow-x-hidden relative flex flex-col">
-                {children}
-              </div>
-
-              {/* Phone Gesture Bottom Bar */}
-              <div className="bg-[#0D182A] pt-2 pb-1 flex justify-center">
-                <div className="w-32 h-1 bg-slate-600 rounded-full" />
-              </div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {children}
             </div>
           </div>
         )}

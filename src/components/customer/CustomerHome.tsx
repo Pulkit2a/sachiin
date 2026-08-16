@@ -9,7 +9,6 @@ import {
   Zap,
   Bot,
   Activity,
-  Calendar,
   Wind,
   Droplets,
   Sparkles as CleaningIcon,
@@ -17,23 +16,23 @@ import {
   Paintbrush,
   Tv,
   ShieldAlert,
-  Car,
-  Utensils,
-  Home as MaidIcon,
-  Flower2,
-  Grid,
-  TrendingUp,
-  Award,
+  User,
   ArrowRight,
+  Gift,
+  CheckCircle,
+  Clock,
+  Plus,
 } from 'lucide-react';
-import { serviceCategories, sampleHeroes, sampleUserProfile } from '../../data/mockData';
-import { ServiceCategory } from '../../types';
+import { serviceCategories, sampleServices, mockCities } from '../../data/mockData';
+import { ServiceCategory, CustomerAuthState } from '../../types';
 
 interface CustomerHomeProps {
   onSelectCategory: (categoryId: string) => void;
-  onNavigateToAI: (screen: 'identifier' | 'diagnostics' | 'chat') => void;
+  onNavigateToAI: (screen: string) => void;
   onNavigateToBookings: () => void;
   onNavigateToRewards: () => void;
+  onOpenLoginModal: () => void;
+  authState: CustomerAuthState;
 }
 
 export const CustomerHome: React.FC<CustomerHomeProps> = ({
@@ -41,6 +40,8 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
   onNavigateToAI,
   onNavigateToBookings,
   onNavigateToRewards,
+  onOpenLoginModal,
+  authState,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeBannerIndex, setActiveBannerIndex] = useState(0);
@@ -50,33 +51,29 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
       title: 'Summer Chill Fest ❄️',
       subtitle: 'Flat 30% OFF on Split & Window AC Deep Servicing',
       code: 'COOLSUMMER',
-      bgGradient: 'from-sky-900 via-indigo-900 to-[#0D182A]',
-      accentColor: '#38BDF8',
+      bgGradient: 'from-[#3B1C71] via-[#5C2B90] to-[#0D182A]',
+      accentColor: '#F4C430',
     },
     {
       title: 'Monsoon Home Care ☔',
-      subtitle: 'Free Thermal Waterproofing Check with Electrical Fixes',
+      subtitle: 'Free Waterproofing Inspection with Electrical Fixes',
       code: 'MONSOONCARE',
-      bgGradient: 'from-amber-900 via-slate-900 to-[#0D182A]',
-      accentColor: '#F5C542',
+      bgGradient: 'from-sky-900 via-indigo-900 to-[#0D182A]',
+      accentColor: '#38BDF8',
     },
   ];
 
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
       case 'Wind': return Wind;
-      case 'Droplets': return Droplets;
-      case 'Zap': return Zap;
       case 'Sparkles': return CleaningIcon;
+      case 'User': return User;
+      case 'ShieldAlert': return ShieldAlert;
+      case 'Zap': return Zap;
+      case 'Droplets': return Droplets;
       case 'Hammer': return Hammer;
       case 'Paintbrush': return Paintbrush;
-      case 'Tv': return Tv;
-      case 'ShieldAlert': return ShieldAlert;
-      case 'Car': return Car;
-      case 'Utensils': return Utensils;
-      case 'Home': return MaidIcon;
-      case 'Flower2': return Flower2;
-      default: return Grid;
+      default: return Sparkles;
     }
   };
 
@@ -86,87 +83,67 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
   );
 
   return (
-    <div className="flex-1 bg-[#F6F7F9] text-[#0D182A] pb-8">
-      {/* Top Header Bar */}
-      <div className="bg-[#0D182A] text-white pt-4 pb-6 px-4 rounded-b-3xl shadow-xl">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-[#F5C542] animate-bounce" />
-            <div>
-              <div className="flex items-center gap-1">
-                <span className="font-bold text-xs text-white">HSR Layout, Sector 1</span>
-                <ChevronRight className="w-3 h-3 text-slate-400" />
-              </div>
-              <p className="text-[10px] text-slate-400 truncate max-w-[200px]">
-                #402, Sunshine Apartments, Bengaluru
-              </p>
-            </div>
-          </div>
-
+    <div className="flex-1 bg-[#F8FAFC] text-[#0F172A] pb-10 font-sans">
+      {/* Top Urban Company Header */}
+      <div className="bg-[#3B1C71] text-white px-4 pt-4 pb-6 rounded-b-3xl shadow-xl">
+        {/* City Selector & User Login Status */}
+        <div className="flex items-center justify-between mb-4">
           <button
-            onClick={onNavigateToRewards}
-            className="flex items-center gap-1.5 bg-slate-800/90 border border-[#F5C542]/30 px-2.5 py-1 rounded-full text-xs hover:bg-slate-800 transition-colors"
+            onClick={onOpenLoginModal}
+            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1.5 rounded-full text-xs font-bold transition-all text-white"
           >
-            <Award className="w-3.5 h-3.5 text-[#F5C542]" />
-            <span className="font-bold text-[#F5C542] text-xs">{sampleUserProfile.rewardPoints} pts</span>
+            <MapPin className="w-4 h-4 text-[#F4C430]" />
+            <span className="truncate max-w-[140px]">{authState.selectedCity}</span>
+            <span className="text-[10px] text-purple-200">v</span>
           </button>
+
+          {authState.isLoggedIn ? (
+            <button
+              onClick={onOpenLoginModal}
+              className="flex items-center gap-1.5 bg-[#F4C430] text-[#3B1C71] px-3 py-1.5 rounded-full text-xs font-extrabold shadow-md hover:bg-amber-300 transition-colors"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>{authState.name.split(' ')[0]}</span>
+            </button>
+          ) : (
+            <button
+              onClick={onOpenLoginModal}
+              className="bg-[#F4C430] text-[#3B1C71] px-3 py-1.5 rounded-full text-xs font-extrabold shadow-md hover:bg-amber-300 transition-colors"
+            >
+              Log In / Register
+            </button>
+          )}
         </div>
 
-        {/* Greeting & Search Bar */}
-        <div className="mb-2">
-          <h1 className="font-heading font-semibold text-lg text-white">
-            Hello, {sampleUserProfile.name.split(' ')[0]} 👋
-          </h1>
-          <p className="text-xs text-slate-300">Which service do you need today?</p>
-        </div>
-
-        {/* Search Input */}
-        <div className="relative mt-3">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+        {/* Search Bar */}
+        <div className="relative mb-4">
+          <Search className="w-4 h-4 text-purple-300 absolute left-3.5 top-3.5" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search AC Repair, Plumber, Cleaning, Electrician..."
-            className="w-full bg-slate-800/90 border border-slate-700/80 rounded-2xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#F5C542] transition-all"
+            placeholder="Search 'AC Repair', 'Salon for Women', 'Plumber'..."
+            className="w-full pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-2xl text-xs text-white placeholder-purple-200 focus:outline-none focus:bg-white/20 transition-all font-medium"
           />
-          <button
-            onClick={() => onNavigateToAI('identifier')}
-            className="absolute right-2 top-2 bg-[#F5C542] text-[#0D182A] p-1 rounded-xl text-[10px] font-bold flex items-center gap-1 px-2 shadow-md hover:bg-amber-300 transition-colors"
-            title="Scan with AI"
-          >
-            <Sparkles className="w-3 h-3" />
-            AI Scan
-          </button>
         </div>
-      </div>
 
-      <div className="px-4 mt-4 space-y-5">
-        {/* Promotional Campaign Banner */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 shadow-md">
-          <div className={`p-4 bg-gradient-to-r ${banners[activeBannerIndex].bgGradient} text-white flex flex-col justify-between min-h-[110px]`}>
-            <div className="flex items-start justify-between">
-              <span className="text-[10px] uppercase tracking-wider font-extrabold bg-[#F5C542] text-[#0D182A] px-2 py-0.5 rounded-full">
-                Featured Campaign
-              </span>
-              <span className="text-[10px] text-slate-300 bg-white/10 px-2 py-0.5 rounded-lg border border-white/10">
-                Code: {banners[activeBannerIndex].code}
-              </span>
+        {/* Hero Banner Carousel */}
+        <div className={`p-4 rounded-2xl bg-gradient-to-r ${banners[activeBannerIndex].bgGradient} border border-white/10 shadow-lg relative overflow-hidden`}>
+          <div className="relative z-10">
+            <div className="inline-block bg-[#F4C430] text-[#3B1C71] text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider mb-1">
+              Urban Company Exclusive
             </div>
-
-            <div className="mt-2">
-              <h3 className="font-heading font-bold text-sm text-white">
-                {banners[activeBannerIndex].title}
-              </h3>
-              <p className="text-xs text-slate-200 mt-0.5">
-                {banners[activeBannerIndex].subtitle}
-              </p>
-            </div>
+            <h3 className="font-heading font-extrabold text-base text-white">
+              {banners[activeBannerIndex].title}
+            </h3>
+            <p className="text-xs text-purple-100 mt-0.5">
+              {banners[activeBannerIndex].subtitle}
+            </p>
 
             <div className="flex items-center justify-between mt-3">
               <button
-                onClick={() => onSelectCategory('ac_repair')}
-                className="bg-[#F5C542] text-[#0D182A] px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-amber-300 transition-colors shadow-sm"
+                onClick={() => onSelectCategory('ac_appliance')}
+                className="bg-[#F4C430] text-[#3B1C71] px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-amber-300 transition-colors shadow-sm"
               >
                 Book Now <ArrowRight className="w-3 h-3" />
               </button>
@@ -177,7 +154,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
                     key={idx}
                     onClick={() => setActiveBannerIndex(idx)}
                     className={`w-2 h-2 rounded-full transition-all ${
-                      idx === activeBannerIndex ? 'bg-[#F5C542] w-4' : 'bg-slate-600'
+                      idx === activeBannerIndex ? 'bg-[#F4C430] w-4' : 'bg-white/40'
                     }`}
                   />
                 ))}
@@ -185,94 +162,53 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Your Journey Stats Row */}
+      {/* Main Body */}
+      <div className="px-4 mt-4 space-y-5">
+        {/* Quick AI Diagnostics & emergency shortcuts */}
         <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex items-center justify-between">
           <button
             onClick={onNavigateToBookings}
             className="flex-1 text-center border-r border-slate-100 pr-2 hover:opacity-80 transition-opacity"
           >
-            <div className="text-lg font-heading font-bold text-[#0D182A]">3</div>
-            <div className="text-[10px] text-slate-500 font-medium">Active Bookings</div>
+            <div className="text-base font-heading font-bold text-[#3B1C71]">1 Active</div>
+            <div className="text-[10px] text-slate-500 font-medium">Live Partner ETA</div>
           </button>
 
           <button
-            onClick={onNavigateToBookings}
+            onClick={() => onNavigateToAI('identifier')}
             className="flex-1 text-center border-r border-slate-100 px-2 hover:opacity-80 transition-opacity"
           >
-            <div className="text-lg font-heading font-bold text-[#0D182A]">12</div>
-            <div className="text-[10px] text-slate-500 font-medium">Services Completed</div>
+            <div className="text-base font-heading font-bold text-emerald-600 flex items-center justify-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-[#F4C430]" /> AI Scan
+            </div>
+            <div className="text-[10px] text-slate-500 font-medium">Issue Identifier</div>
           </button>
 
           <button
             onClick={onNavigateToRewards}
             className="flex-1 text-center pl-2 hover:opacity-80 transition-opacity"
           >
-            <div className="text-lg font-heading font-bold text-[#F5C542] flex items-center justify-center gap-1">
-              1,450 <Award className="w-3.5 h-3.5" />
+            <div className="text-base font-heading font-bold text-amber-600 flex items-center justify-center gap-1">
+              450 <Gift className="w-3.5 h-3.5 text-amber-500" />
             </div>
-            <div className="text-[10px] text-slate-500 font-medium">Hero Points</div>
+            <div className="text-[10px] text-slate-500 font-medium">UC Plus Cash</div>
           </button>
         </div>
 
-        {/* AI Quick Assistant Tools */}
+        {/* Categories Grid */}
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="font-heading font-bold text-sm text-[#0D182A] flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#F5C542]" />
-              AI Home Intelligence
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-heading font-extrabold text-sm text-[#0F172A]">
+              Urban Company Services ({filteredCategories.length})
             </h2>
-            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              Live AI
+            <span className="text-xs text-purple-700 font-bold flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Verified Partners
             </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => onNavigateToAI('identifier')}
-              className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:border-[#F5C542] transition-all flex flex-col items-center text-center group"
-            >
-              <div className="w-9 h-9 rounded-xl bg-amber-50 text-[#0D182A] flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
-                <Sparkles className="w-4 h-4 text-[#F5C542]" />
-              </div>
-              <span className="font-bold text-[11px] text-[#0D182A] leading-tight">AI Issue Scanner</span>
-              <span className="text-[9px] text-slate-500 mt-0.5">Photo or Text</span>
-            </button>
-
-            <button
-              onClick={() => onNavigateToAI('diagnostics')}
-              className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-400 transition-all flex flex-col items-center text-center group"
-            >
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
-                <Activity className="w-4 h-4" />
-              </div>
-              <span className="font-bold text-[11px] text-[#0D182A] leading-tight">Wellness Score</span>
-              <span className="text-[9px] text-emerald-600 font-semibold mt-0.5">94% Healthy</span>
-            </button>
-
-            <button
-              onClick={() => onNavigateToAI('chat')}
-              className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-400 transition-all flex flex-col items-center text-center group"
-            >
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
-                <Bot className="w-4 h-4" />
-              </div>
-              <span className="font-bold text-[11px] text-[#0D182A] leading-tight">Hero Chatbot</span>
-              <span className="text-[9px] text-slate-500 mt-0.5">Instant Advice</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Service Categories Grid */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-heading font-bold text-sm text-[#0D182A]">
-              Explore Household Services ({filteredCategories.length})
-            </h2>
-            <span className="text-xs text-slate-500 font-medium">All Verified</span>
-          </div>
-
-          <div className="grid grid-cols-4 sm:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-3 gap-2.5">
             {filteredCategories.map((cat) => {
               const IconComp = getCategoryIcon(cat.icon);
 
@@ -280,21 +216,24 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id)}
-                  className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#F5C542] transition-all flex flex-col items-center text-center group relative overflow-hidden"
+                  className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-[#3B1C71] transition-all flex flex-col items-center text-center group relative overflow-hidden"
                 >
                   {cat.badge && (
-                    <span className="absolute top-0 right-0 bg-[#F5C542] text-[#0D182A] text-[8px] font-extrabold px-1.5 py-0.5 rounded-bl-lg">
+                    <span className="absolute top-0 right-0 bg-[#F4C430] text-[#3B1C71] text-[8px] font-extrabold px-1.5 py-0.5 rounded-bl-lg">
                       {cat.badge}
                     </span>
                   )}
                   <div
-                    className="w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-110 shadow-sm"
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-110 shadow-sm"
                     style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
                   >
                     <IconComp className="w-5 h-5" />
                   </div>
-                  <span className="text-[11px] font-semibold text-[#0D182A] line-clamp-1">
+                  <span className="text-xs font-bold text-slate-800 line-clamp-1">
                     {cat.name}
+                  </span>
+                  <span className="text-[9px] text-slate-500 mt-0.5 line-clamp-1">
+                    {cat.description}
                   </span>
                 </button>
               );
@@ -302,74 +241,48 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
           </div>
         </div>
 
-        {/* Top Rated Verified Professionals Near You */}
+        {/* Most Booked Services */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div>
-              <h2 className="font-heading font-bold text-sm text-[#0D182A]">
-                Top Rated Heroes Nearby
-              </h2>
-              <p className="text-[11px] text-slate-500">
-                AI Smart Matched based on 100% background checks & rating
-              </p>
-            </div>
-            <button
-              onClick={() => onNavigateToAI('matching')}
-              className="text-xs font-bold text-[#0D182A] hover:underline flex items-center gap-0.5"
-            >
-              See All <ChevronRight className="w-3 h-3" />
-            </button>
+            <h2 className="font-heading font-extrabold text-sm text-[#0F172A]">
+              Most Booked This Week
+            </h2>
+            <span className="text-xs text-purple-700 font-bold">Top Rated</span>
           </div>
 
-          <div className="space-y-3">
-            {sampleHeroes.map((hero) => (
+          <div className="space-y-2.5">
+            {sampleServices.map((svc) => (
               <div
-                key={hero.id}
-                className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex items-start gap-3 hover:border-slate-300 transition-all"
+                key={svc.id}
+                onClick={() => onSelectCategory(svc.categoryId)}
+                className="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm hover:border-[#3B1C71] transition-all cursor-pointer flex items-center justify-between"
               >
-                <div className="relative">
-                  <img
-                    src={hero.avatar}
-                    alt={hero.name}
-                    className="w-14 h-14 rounded-2xl object-cover border border-slate-200"
-                  />
-                  {hero.verified && (
-                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 shadow">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-heading font-bold text-xs text-[#0D182A] truncate">
-                      {hero.name}
-                    </h3>
-                    <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                      <Sparkles className="w-3 h-3 text-[#F5C542]" />
-                      {hero.aiMatchScore}% Match
+                <div className="flex-1 pr-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="bg-emerald-50 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                      ★ {svc.rating} ({svc.reviewsCount} reviews)
                     </span>
+                    <span className="text-[10px] text-slate-400 font-medium">• {svc.duration}</span>
                   </div>
+                  <h4 className="font-bold text-xs text-slate-900">{svc.name}</h4>
+                  <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5">{svc.tagline}</p>
 
-                  <p className="text-[11px] text-slate-500">{hero.category} • {hero.experienceYears} yrs exp</p>
-
-                  <div className="flex items-center gap-3 mt-1.5 text-xs">
-                    <div className="flex items-center gap-1 text-amber-500 font-bold">
-                      <Star className="w-3.5 h-3.5 fill-amber-400" />
-                      <span>{hero.rating}</span>
-                      <span className="text-slate-400 font-normal text-[10px]">({hero.jobsCompleted}+ jobs)</span>
-                    </div>
-
-                    <span className="text-slate-400">•</span>
-                    <span className="text-slate-600 font-medium text-[11px]">{hero.distanceKm} km away</span>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-sm font-extrabold text-[#3B1C71]">₹{svc.price}</span>
+                    {svc.originalPrice && (
+                      <span className="text-xs text-slate-400 line-through">₹{svc.originalPrice}</span>
+                    )}
                   </div>
                 </div>
 
                 <button
-                  onClick={() => onSelectCategory('ac_repair')}
-                  className="bg-[#F5C542] text-[#0D182A] text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-amber-300 transition-colors shadow-sm self-center"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectCategory(svc.categoryId);
+                  }}
+                  className="bg-purple-50 text-[#3B1C71] hover:bg-[#3B1C71] hover:text-white px-3 py-2 rounded-xl text-xs font-bold border border-purple-200 transition-all flex items-center gap-1"
                 >
-                  Book
+                  <Plus className="w-3.5 h-3.5" /> Add
                 </button>
               </div>
             ))}

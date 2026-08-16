@@ -8,6 +8,13 @@ export type HeroTab = 'jobs' | 'schedule' | 'earnings' | 'kyc' | 'ratings';
 
 export type AdminTab = 'dashboard' | 'users_heroes' | 'kyc_queue' | 'bookings' | 'commissions' | 'support';
 
+export interface CityOption {
+  id: string;
+  name: string;
+  state: string;
+  popular?: boolean;
+}
+
 export interface ServiceCategory {
   id: string;
   name: string;
@@ -62,6 +69,15 @@ export interface HeroProfessional {
 
 export type BookingStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 
+export type PartnerJobStep = 'assigned' | 'navigating' | 'arrived' | 'in_progress' | 'completed';
+
+export interface ExtraPartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 export interface Booking {
   id: string;
   serviceId: string;
@@ -79,13 +95,36 @@ export interface Booking {
   };
   dateTime: string;
   status: BookingStatus;
+  partnerStep?: PartnerJobStep;
   amount: number;
   paymentMethod: string;
   paymentStatus: 'paid' | 'pending' | 'refunded';
   otp: string;
+  extraParts?: ExtraPartItem[];
   heroCurrentLocation?: { lat: number; lng: number; address: string; etaMinutes: number };
   notes?: string;
   createdAt: string;
+}
+
+export interface CustomerAuthState {
+  isLoggedIn: boolean;
+  phone: string;
+  name: string;
+  selectedCity: string;
+  defaultAddress: string;
+  email?: string;
+}
+
+export interface PartnerAuthState {
+  isLoggedIn: boolean;
+  partnerId: string;
+  name: string;
+  phone: string;
+  category: string;
+  rating: number;
+  isOnline: boolean;
+  kycStatus: 'verified' | 'pending' | 'rejected';
+  completedJobsCount: number;
 }
 
 export interface AIWellnessItem {
@@ -142,7 +181,7 @@ export interface UserProfile {
     isDefault?: boolean;
   }[];
   rewardPoints: number;
-  membershipTier: 'Hero Silver' | 'Hero Gold' | 'Hero Platinum';
+  membershipTier: 'UC Plus Silver' | 'UC Plus Gold' | 'UC Plus VIP';
   membershipTierProgress: number; // 0 - 100
   referralCode: string;
   totalSavings: number;
@@ -155,11 +194,13 @@ export interface HeroProviderState {
     id: string;
     serviceName: string;
     customerName: string;
+    customerPhone: string;
     customerAddress: string;
     distanceKm: number;
     payout: number;
     timeSlot: string;
     expiresInSeconds: number;
+    otpRequired: string;
   };
   todayEarnings: number;
   weeklyEarnings: number;
