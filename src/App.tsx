@@ -140,17 +140,17 @@ export default function App() {
   };
 
   const getCurrentScreenLabel = () => {
-    if (role === 'admin') return '🛡️ UC Admin Control Room';
+    if (role === 'admin') return '🛡️ HH Admin Control Room';
     if (role === 'flow') return '🔄 User Flow Architecture';
-    if (role === 'hero') return `⚡ UC Partner App (${heroTab.toUpperCase()})`;
+    if (role === 'hero') return `⚡ Heros Homes Partner App (${heroTab.toUpperCase()})`;
 
     if (activeSubView === 'live_map') return '📍 Live Partner Tracking & Start Job OTP';
-    if (activeSubView === 'service_flow') return '⚡ Urban Company Service Checkout';
+    if (activeSubView === 'service_flow') return '⚡ Heros Homes Service Checkout';
     if (activeSubView === 'ai_identifier') return '🤖 AI Issue Scanner';
     if (activeSubView === 'ai_diagnostics') return '📊 AI Home Wellness Diagnostics';
-    if (activeSubView === 'ai_chat') return '💬 UC AI Assistant';
+    if (activeSubView === 'ai_chat') return '💬 HH AI Assistant';
 
-    return `🏠 Urban Company Customer (${customerTab.charAt(0).toUpperCase() + customerTab.slice(1)})`;
+    return `🏠 Heros Homes Customer (${customerTab.charAt(0).toUpperCase() + customerTab.slice(1)})`;
   };
 
   return (

@@ -62,7 +62,7 @@ export const ServiceBookingFlow: React.FC<ServiceBookingFlowProps> = ({
   const handleConfirmBooking = () => {
     const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
     const newBooking: Booking = {
-      id: `UC-${Math.floor(10000 + Math.random() * 90000)}`,
+      id: `HH-${Math.floor(10000 + Math.random() * 90000)}`,
       serviceId: selectedService.id,
       serviceName: selectedService.name,
       categoryName: selectedService.categoryId,
@@ -88,7 +88,7 @@ export const ServiceBookingFlow: React.FC<ServiceBookingFlowProps> = ({
         address: 'En route via 100ft Road (1.5 km away)',
         etaMinutes: 10,
       },
-      notes: 'Urban Company verified partner dispatched.',
+      notes: 'Heros Homes verified partner dispatched.',
       createdAt: 'Just now',
     };
 
@@ -98,12 +98,12 @@ export const ServiceBookingFlow: React.FC<ServiceBookingFlowProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/70 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
-        {/* Urban Company Header */}
+        {/* Heros Homes Header */}
         <div className="bg-[#3B1C71] text-white p-4 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-1.5">
               <span className="bg-[#F4C430] text-[#3B1C71] font-extrabold text-[9px] px-2 py-0.5 rounded-full uppercase">
-                Urban Company Checkout
+                Heros Homes Checkout
               </span>
               <span className="text-xs text-purple-200">Step {step === 'customize' ? '1/3' : step === 'slot' ? '2/3' : '3/3'}</span>
             </div>
@@ -127,7 +127,7 @@ export const ServiceBookingFlow: React.FC<ServiceBookingFlowProps> = ({
               <div className="bg-purple-50 p-3 rounded-2xl border border-purple-100 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-[#3B1C71] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-extrabold text-[#3B1C71]">30-Day Urban Company Warranty</h4>
+                  <h4 className="text-xs font-extrabold text-[#3B1C71]">30-Day Heros Homes Warranty</h4>
                   <p className="text-[11px] text-purple-900/80 mt-0.5">
                     Background-verified partners, anti-bacterial foam treatment & free revisit protection.
                   </p>

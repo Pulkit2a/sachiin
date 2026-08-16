@@ -131,7 +131,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
         <div className={`p-4 rounded-2xl bg-gradient-to-r ${banners[activeBannerIndex].bgGradient} border border-white/10 shadow-lg relative overflow-hidden`}>
           <div className="relative z-10">
             <div className="inline-block bg-[#F4C430] text-[#3B1C71] text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider mb-1">
-              Urban Company Exclusive
+              Heros Homes Exclusive
             </div>
             <h3 className="font-heading font-extrabold text-base text-white">
               {banners[activeBannerIndex].title}
@@ -193,7 +193,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
             <div className="text-base font-heading font-bold text-amber-600 flex items-center justify-center gap-1">
               450 <Gift className="w-3.5 h-3.5 text-amber-500" />
             </div>
-            <div className="text-[10px] text-slate-500 font-medium">UC Plus Cash</div>
+            <div className="text-[10px] text-slate-500 font-medium">Heros Cash</div>
           </button>
         </div>
 
@@ -201,7 +201,7 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-heading font-extrabold text-sm text-[#0F172A]">
-              Urban Company Services ({filteredCategories.length})
+              Heros Homes Services ({filteredCategories.length})
             </h2>
             <span className="text-xs text-purple-700 font-bold flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Verified Partners

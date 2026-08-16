@@ -290,7 +290,7 @@ export const HeroApp: React.FC<HeroAppProps> = ({
                 <div>
                   <h3 className="font-heading font-extrabold text-lg text-white">Enter Customer Start-Job OTP</h3>
                   <p className="text-xs text-slate-400 mt-1">
-                    Ask customer for their 4-digit code shown on their Urban Company app to initiate job setup.
+                    Ask customer for their 4-digit code shown on their Heros Homes app to initiate job setup.
                   </p>
                 </div>
 

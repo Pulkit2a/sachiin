@@ -52,7 +52,7 @@ export const PartnerLoginModal: React.FC<PartnerLoginModalProps> = ({
 
           <div className="flex items-center gap-2 mb-1">
             <span className="bg-slate-950 text-amber-400 font-extrabold text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">
-              UC Partner App
+              Heros Homes Partner
             </span>
             <span className="text-xs font-bold text-slate-900">Service Provider Portal</span>
           </div>

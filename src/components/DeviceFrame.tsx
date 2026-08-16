@@ -87,11 +87,11 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B1C71] to-[#6E3CBC] border border-purple-400 flex items-center justify-center text-[#F4C430] font-black text-lg shadow-lg">
-                UC
+                HH
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-heading font-extrabold text-base text-white tracking-tight">Urban Company</span>
+                  <span className="font-heading font-extrabold text-base text-white tracking-tight">Heros Homes</span>
                   <span className="text-[9px] bg-[#F4C430] text-[#3B1C71] font-black px-1.5 py-0.2 rounded uppercase">
                     Dual App v3.0
                   </span>

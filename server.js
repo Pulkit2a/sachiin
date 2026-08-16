@@ -16,6 +16,6 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`\n==================================================`);
-  console.log(`  Hero Homes server running at: http://localhost:${PORT}`);
+  console.log(`  Heros Homes server running at: http://localhost:${PORT}`);
   console.log(`==================================================\n`);
 });

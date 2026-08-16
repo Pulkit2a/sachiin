@@ -61,13 +61,13 @@ export const CustomerLoginModal: React.FC<CustomerLoginModalProps> = ({
           
           <div className="flex items-center gap-2 mb-2">
             <span className="bg-[#F4C430] text-[#3B1C71] font-black text-xs px-2.5 py-0.5 rounded-full tracking-wider uppercase">
-              Urban Company
+              Heros Homes
             </span>
             <span className="text-xs text-purple-200">Customer Access</span>
           </div>
 
           <h3 className="font-heading font-extrabold text-2xl tracking-tight">
-            {step === 'phone' && 'Welcome to Urban Company'}
+            {step === 'phone' && 'Welcome to Heros Homes'}
             {step === 'otp' && 'Enter Verification Code'}
             {step === 'city' && 'Select Your City'}
           </h3>
