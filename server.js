@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.post('/api/auth/register', (req, res) => {
   try {
     const { email, phone, name, password, role, city, category } = req.body;
-    
+
     if (!name || (!email && !phone) || !password || !role) {
       return res.status(400).json({ error: 'Missing required registration fields' });
     }
@@ -41,7 +41,7 @@ app.post('/api/auth/register', (req, res) => {
 app.post('/api/auth/login', (req, res) => {
   try {
     const { identifier, password, role } = req.body;
-    
+
     // Check Admin hardcoded or DB fallback
     if (role === 'admin' && (identifier === 'admin@heroshomes.com' || identifier === 'admin') && password === 'admin123') {
       return res.json({
